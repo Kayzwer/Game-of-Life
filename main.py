@@ -1,5 +1,5 @@
 import os
-import time
+import argparse
 import numpy as np
 
 
@@ -78,15 +78,26 @@ class World:
             i += 1
 
     def run(self) -> None:
-        while True:
+        try:
+            while True:
+                os.system("clear")
+                print(self, end="\r")
+                self.step()
+        except KeyboardInterrupt:
             os.system("clear")
-            print(self, end="\r")
-            self.step()
 
 
 def main():
-    env = World(240, 66)
-    env.initial_population(9000)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--width', help="width of the world", type=int,
+                        default=50)
+    parser.add_argument('--height', help="height of the world", type=int,
+                        default=50)
+    parser.add_argument('--init_pop', help="initial population of life cells",
+                        type=int, default=1000)
+    args = parser.parse_args()
+    env = World(args.width, args.height)
+    env.initial_population(args.init_pop)
     env.run()
 
 
