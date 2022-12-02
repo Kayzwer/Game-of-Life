@@ -20,7 +20,7 @@ class World:
             output += "\n"
         return output
 
-    def step(self) -> np.ndarray:
+    def step(self) -> None:
         new_world = np.copy(self.world)
         for i in range(self.height):
             for j in range(self.width):
