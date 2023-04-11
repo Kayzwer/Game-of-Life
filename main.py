@@ -7,10 +7,10 @@ class World:
     def __init__(self, width: int, height: int) -> None:
         self.width = width
         self.height = height
-        self.world = np.zeros((height, width), dtype=np.bool8)
+        self.world = np.zeros((height, width), dtype=np.int0)
 
     def _get_world(self, i: int, j: int) -> np.int0:
-        return np.int0(self.world[i][j])
+        return self.world[i][j]
 
     def __str__(self) -> str:
         output = ""
@@ -73,12 +73,10 @@ class World:
                         self._get_world(i + 1, j + 1) + \
                         self._get_world(i + 1, j) + \
                         self._get_world(i + 1, j - 1)
-                if new_world[i][j]:
-                    if count < 2:
+                if self._get_world(i, j):
+                    if count < 2 or count > 3:
                         new_world[i][j] = False
-                    elif count > 3:
-                        new_world[i][j] = False
-                elif not new_world[i][j] and count == 3:
+                elif not self._get_world(i, j) and count == 3:
                     new_world[i][j] = True
 
         self.world = new_world
@@ -99,7 +97,7 @@ class World:
         try:
             while True:
                 os.system("clear")
-                print(self, end="\r")
+                print(self)
                 self.step()
         except KeyboardInterrupt:
             os.system("clear")
