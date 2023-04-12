@@ -4,39 +4,40 @@
 #include <time.h>
 #include <unistd.h>
 
-int height, width;
+unsigned int height, width;
 
-void display_board(int board[height][width]);
-void display_debug(int board[height][width]);
-void initialize_zeroes(int board[height][width]);
-void initialize_population(int board[height][width], int n);
-void step(int board[height][width]);
-int get_n_alive_neighbors(int board[height][width], int height_pos,
-                          int width_pos);
-int generate_number(int min, int max);
+void display_board(unsigned int board[height][width]);
+void display_debug(unsigned int board[height][width]);
+void initialize_zeroes(unsigned int board[height][width]);
+void initialize_population(unsigned int board[height][width], unsigned int n);
+void step(unsigned int board[height][width]);
+unsigned int get_n_alive_neighbors(unsigned int board[height][width],
+                                   unsigned int height_pos,
+                                   unsigned int width_pos);
+unsigned int generate_number(unsigned int min, unsigned int max);
 
 int main() {
-  int init_pop;
+  unsigned int init_pop;
   struct winsize w;
   srand(time(NULL));
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   height = w.ws_row - 1;
   width = w.ws_col;
-  init_pop = (height * width) / 2;
+  init_pop = (height * width) / 2.71828182846;
 
-  int board[height][width];
+  unsigned int board[height][width];
   initialize_zeroes(board);
   initialize_population(board, init_pop);
   while (1) {
     system("clear");
     display_board(board);
     step(board);
-    // usleep(20000);
+    usleep(100000);
   }
   return EXIT_SUCCESS;
 }
 
-void display_board(int board[height][width]) {
+void display_board(unsigned int board[height][width]) {
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       printf("%c", (board[i][j] == 0) ? ' ' : '0');
@@ -45,7 +46,7 @@ void display_board(int board[height][width]) {
   }
 }
 
-void display_debug(int board[height][width]) {
+void display_debug(unsigned int board[height][width]) {
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       printf("%d", board[i][j]);
@@ -54,7 +55,7 @@ void display_debug(int board[height][width]) {
   }
 }
 
-void initialize_zeroes(int board[height][width]) {
+void initialize_zeroes(unsigned int board[height][width]) {
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       board[i][j] = 0;
@@ -62,7 +63,7 @@ void initialize_zeroes(int board[height][width]) {
   }
 }
 
-void initialize_population(int board[height][width], int n) {
+void initialize_population(unsigned int board[height][width], unsigned int n) {
   int rand_height, rand_width;
   int i = 0;
   while (i < n) {
@@ -75,9 +76,10 @@ void initialize_population(int board[height][width], int n) {
   }
 }
 
-int get_n_alive_neighbors(int board[height][width], int height_pos,
-                          int width_pos) {
-  if ((height_pos == 0) && (width_pos == 0)) {
+unsigned int get_n_alive_neighbors(unsigned int board[height][width],
+                                   unsigned int height_pos,
+                                   unsigned int width_pos) {
+  if ((height_pos + width_pos) == 0) {
     return board[height_pos + 1][width_pos] + board[height_pos][width_pos + 1] +
            board[height_pos + 1][width_pos + 1];
   } else if ((height_pos == 0) && (width_pos == (width - 1))) {
@@ -128,7 +130,7 @@ int get_n_alive_neighbors(int board[height][width], int height_pos,
   }
 }
 
-void step(int board[height][width]) {
+void step(unsigned int board[height][width]) {
   int count;
   int copy_board[height][width];
   for (int i = 0; i < height; ++i) {
@@ -138,7 +140,7 @@ void step(int board[height][width]) {
         if (count < 2 || count > 3) {
           copy_board[i][j] = 0;
         }
-      } else if (board[i][j] == 0 && count == 3) {
+      } else if (count == 3) {
         copy_board[i][j] = 1;
       } else {
         copy_board[i][j] = 0;
@@ -152,6 +154,6 @@ void step(int board[height][width]) {
   }
 }
 
-int generate_number(int min, int max) {
+unsigned int generate_number(unsigned int min, unsigned int max) {
   return (rand() % (max - min + 1)) + min;
 }
